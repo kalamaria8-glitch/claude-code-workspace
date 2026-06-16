@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Notifications Framework — FigJam Paste Source</title>
+<style>
+  body { font-family: Arial, sans-serif; font-size: 12px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; vertical-align: top; white-space: pre-line; }
+  th { background: #1a1a1a; color: #fff; }
+  tr.group td { background: #eee; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<table>
+  <tr>
+    <th>Source</th>
+    <th>Trigger Logic</th>
+    <th>Update vs. Alert</th>
+    <th>Where User Is Notified</th>
+    <th>Where User Can Resolve</th>
+    <th>Where Data Is Stored</th>
+    <th>For How Long</th>
+  </tr>
+
+  <tr class="group"><td colspan="7">Interactions Report</td></tr>
+
+  <tr>
+    <td>Interactions Report</td>
+    <td>Interaction Completed (user is attended); Interaction Report created to log notes</td>
+    <td>Alert</td>
+    <td>Activity Feed
+Teams Textbot
+Int. Hub</td>
+    <td>Interactions Report
+Teams Textbot</td>
+    <td>Activity Feed
+Teams Homepage
+Interactions Report
+Interactions Hub Calendar view</td>
+    <td>90 days past date of alert/update
+1 month "past due" after date of interaction
+Indefinitely
+1 week past date of notes logged</td>
+  </tr>
+
+  <tr>
+    <td>Interactions Report</td>
+    <td>Interaction Completed (user not attended; no deal team); Interaction Report created to log notes</td>
+    <td>Update</td>
+    <td>Activity Feed
+Teams Textbot
+Int. Hub</td>
+    <td>N/A</td>
+    <td>Activity Feed
+Teams Homepage
+Interactions Report
+Interactions Hub Calendar view</td>
+    <td>90 days past date of alert/update
+1 month past due after date of interaction
+Indefinitely
+1 week past date of notes logged</td>
+  </tr>
+
+  <tr>
+    <td>Interactions Report</td>
+    <td>Upcoming Tasks in next 3 days (user has been assigned the task)</td>
+    <td>Alert</td>
+    <td>Activity Feed
+Int. Hub</td>
+    <td>Interactions Report</td>
+    <td>Activity Feed
+Teams Homepage
+Interactions Report
+Interactions Hub Tasks tab</td>
+    <td>90 days past date of alert/update
+1 month past due after date of interaction
+Indefinitely
+1 month past due date</td>
+  </tr>
+
+  <tr>
+    <td>Interactions Report</td>
+    <td>Upcoming Tasks in next 3 days (user assigned the task to someone else)</td>
+    <td>Update</td>
+    <td>N/A</td>
+    <td>N/A</td>
+    <td>Activity Feed
+Teams Homepage
+Interactions Report
+Interactions Hub Tasks tab</td>
+    <td>90 days past date of alert/update
+1 month past due after date of interaction
+Indefinitely
+1 month past due date</td>
+  </tr>
+
+  <tr>
+    <td>Interactions Report</td>
+    <td>A task you assigned to another user has been deleted</td>
+    <td>Update</td>
+    <td>Activity Feed
+Int. Hub</td>
+    <td>N/A</td>
+    <td>Activity Feed
+Teams Homepage
+Interactions Report (shows as deleted)
+Interactions Hub Tasks tab</td>
+    <td>90 days past date of alert/update
+1 month past due after date of interaction
+Indefinitely
+1 week past date of update</td>
+  </tr>
+
+  <tr class="group"><td colspan="7">Opportunity Details / Opportunities</td></tr>
+
+  <tr>
+    <td>Opportunity Details / Opportunities</td>
+    <td>Banker updates a key deal attribute, such as (but not limited to) probability, coverage, estimated close date, or estimated fee.</td>
+    <td>Update</td>
+    <td>Activity Feed
+Opportunities Page
+Opportunities Widget</td>
+    <td>N/A</td>
+    <td>Activity Feed
+Opportunity Details
+Opportunities widget
+Change Log
+Weekly Change Digest</td>
+    <td>90 days past date of alert/update
+1 week past date of alert/update
+1 week past date of alert/update
+1 year past date of alert/update
+1 month past date of alert/update</td>
+  </tr>
+
+  <tr>
+    <td>Opportunity Details / Opportunities</td>
+    <td>Change in Deal State to Closed-Won</td>
+    <td>Alert</td>
+    <td>Activity Feed
+Opportunities Page
+Opportunities Widget</td>
+    <td>Opportunities Widget
+Teams Textbot</td>
+    <td>Activity Feed
+Textbot
+Opportunity Details
+Opportunities widget
+Change Log
+Weekly Change Digest</td>
+    <td>90 days past date of alert/update
+1 month past date of alert/update
+1 week past date of alert/update
+1 week past date of alert/update
+1 year past date of alert/update
+1 month past date of alert/update</td>
+  </tr>
+
+  <tr>
+    <td>Opportunity Details</td>
+    <td>When new opportunity is created or coverage users updated to include banker they are alerted</td>
+    <td>Update</td>
+    <td>Activity Feed
+Opportunities Page
+Opportunities Widget</td>
+    <td>N/A</td>
+    <td>Activity Feed
+Opportunity Details
+Opportunities widget
+Change Log
+Weekly Change Digest</td>
+    <td>90 days past date of alert/update
+1 week past date of alert/update
+1 week past date of alert/update
+1 year past date of alert/update
+1 month past date of alert/update</td>
+  </tr>
+
+  <tr class="group"><td colspan="7">Engagement Health</td></tr>
+
+  <tr>
+    <td>Engagement Health</td>
+    <td>Banking's last interaction date is coming due in, or My Last Interaction Date is coming due — both within 2 weeks</td>
+    <td>Alert</td>
+    <td>Activity Feed
+Engagement Health</td>
+    <td>Depends</td>
+    <td>Activity Feed
+Engagement Health
+Interactions page</td>
+    <td>90 days past date of alert/update
+1 year "past due" (after which client marked 'inactive')
+Indefinitely (after 1 year past due, client becomes 'inactive')</td>
+  </tr>
+
+  <tr class="group"><td colspan="7">Signals</td></tr>
+
+  <tr>
+    <td>Signals</td>
+    <td>News item flagged for action</td>
+    <td>Alert</td>
+    <td>Activity Feed
+Signals</td>
+    <td>N/A</td>
+    <td>Activity Feed
+Signals</td>
+    <td>90 days past date of alert/update
+90 days</td>
+  </tr>
+
+  <tr class="group"><td colspan="7">Approvals Queue</td></tr>
+
+  <tr>
+    <td>Approvals Queue</td>
+    <td>When another banker approves a client tier change, for example, that this banker's client tier change has been approved</td>
+    <td>Update</td>
+    <td>Activity Feed</td>
+    <td>N/A</td>
+    <td>Activity Feed
+Opportunity Details</td>
+    <td>90 days past date of alert/update
+1 week past date of update</td>
+  </tr>
+
+  <tr>
+    <td>Approvals Queue</td>
+    <td>Another banker on same deal team requests a deal attribute change that requires approval.</td>
+    <td>Update</td>
+    <td>Activity Feed</td>
+    <td>N/A</td>
+    <td>Activity Feed</td>
+    <td>90 days past date of alert/update</td>
+  </tr>
+
+  <tr class="group"><td colspan="7">Hierarchy Cases</td></tr>
+
+  <tr>
+    <td>Hierarchy Cases</td>
+    <td>When another banker approves a client legal entity change, for example, that this banker requested for an account they cover</td>
+    <td>Update</td>
+    <td>Activity Feed</td>
+    <td>N/A</td>
+    <td>Activity Feed
+Opportunity Details</td>
+    <td>90 days past date of alert/update
+1 week past date of update</td>
+  </tr>
+
+  <tr>
+    <td>Hierarchy Cases</td>
+    <td>Another banker on same deal team requests a change to the status of a covered account which requires approval.</td>
+    <td>Update</td>
+    <td>Activity Feed</td>
+    <td>N/A</td>
+    <td>Activity Feed</td>
+    <td>90 days past date of alert/update</td>
+  </tr>
+
+</table>
+
+</body>
+</html>
