@@ -19,21 +19,6 @@
     .page-header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
     .page-header p { font-size: 11px; color: #666; margin-top: 4px; }
 
-    .clarification-banner {
-      background: #fff8e1;
-      border: 1px solid #f0c040;
-      border-left: 4px solid #f0c040;
-      padding: 10px 14px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-      font-size: 11px;
-      line-height: 1.6;
-    }
-    .clarification-banner strong { display: block; margin-bottom: 4px; font-size: 11.5px; }
-    .clarification-banner ul { padding-left: 16px; }
-    .clarification-banner li { margin-bottom: 3px; }
-    .clarification-banner .flag { color: #b45309; font-weight: 600; }
-
     .table-wrapper {
       overflow-x: auto;
       background: #fff;
@@ -61,8 +46,8 @@
     col.c-source   { width: 130px; }
     col.c-trigger  { width: 230px; }
     col.c-type     { width: 80px; }
-    col.c-notified { width: 150px; }
-    col.c-resolves { width: 110px; }
+    col.c-notified { width: 160px; }
+    col.c-resolves { width: 160px; }
     col.c-stored   { width: 220px; }
     col.c-duration { width: 260px; }
 
@@ -112,12 +97,22 @@
       border-color: #3ab89f;
       font-weight: 700;
     }
+    .tag.na {
+      background: #f0f0f0;
+      color: #888;
+      border-color: #ddd;
+      font-style: italic;
+    }
+    .tag.depends {
+      background: #fff3cd;
+      color: #856404;
+      border-color: #ffe083;
+      font-style: italic;
+    }
 
     .trigger-text { font-size: 11px; color: #333; line-height: 1.5; }
-    .trigger-text .partial { color: #b45309; font-style: italic; font-size: 10px; }
     .source-label { font-size: 11px; font-weight: 600; color: #222; }
 
-    /* Storage / duration paired lists */
     .store-list, .duration-list {
       list-style: none;
       font-size: 10.5px;
@@ -161,15 +156,7 @@
 
   <div class="page-header">
     <h1>Notifications Framework</h1>
-    <p>Updated per round 2 feedback · "Where User Can Resolve" simplified to Data Source · Retention durations added</p>
-  </div>
-
-  <div class="clarification-banner">
-    <strong>⚠ Remaining Open Items</strong>
-    <ul>
-      <li><span class="flag">[C4-Row4]</span> Row 4 (Interactions Report — Update — "Upcoming Tasks... assigned to someone else") was not given its own retention entry in your feedback. It was grouped with the "Upcoming Task" trigger family (Row 3) since both share the same 3-day-upcoming-task logic. Flagged inline — confirm this is correct or provide a distinct retention set.</li>
-      <li><span class="flag">[C4-Row11]</span> Row 11 (Approvals Queue — Update — "Change Request Approved") trigger logic copy was not explicitly updated in your feedback (only retention was provided). Left unchanged.</li>
-    </ul>
+    <p>Updated per round 3 feedback · "Where User Is Notified" and "Where User Can Resolve" revised per trigger-by-trigger spec</p>
   </div>
 
   <div class="filter-bar">
@@ -213,13 +200,13 @@
         <!-- ═══════ GROUP 1 · INTERACTIONS REPORT ═══════ -->
         <tr class="group-header" data-group="interactions"><td colspan="7">Interactions Report</td></tr>
 
-        <!-- Row 1 -->
+        <!-- Row 1 / Trigger 1: Log Notes Alert -->
         <tr class="data-row" data-type="Alert" data-group="interactions">
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">Interaction Completed (user is attended); Interaction Report created to log notes</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Teams</span><span class="tag">Int. Hub</span><span class="tag">Int. Report</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Teams Textbot</span><span class="tag">Int. Hub</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Interactions Report</span><span class="tag resolve">Teams Textbot</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -238,13 +225,13 @@
           </td>
         </tr>
 
-        <!-- Row 2 -->
+        <!-- Row 2 / Trigger 2: Notes Logged -->
         <tr class="data-row" data-type="Update" data-group="interactions">
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">Interaction Completed (user not attended; no deal team); Interaction Report created to log notes</p></td>
           <td><span class="badge badge-update">Update</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Teams</span><span class="tag">Int. Hub</span><span class="tag">Int. Report</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Teams Textbot</span><span class="tag">Int. Hub</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -263,13 +250,13 @@
           </td>
         </tr>
 
-        <!-- Row 3 -->
+        <!-- Row 3 / Trigger 3: Upcoming Task -->
         <tr class="data-row" data-type="Alert" data-group="interactions">
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">Upcoming Tasks in next 3 days (user has been assigned the task)</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Int. Hub</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Interactions Report</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -288,13 +275,13 @@
           </td>
         </tr>
 
-        <!-- Row 4 -->
+        <!-- Row 4 / Trigger 4: Upcoming Task Assigned -->
         <tr class="data-row" data-type="Update" data-group="interactions">
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">Upcoming Tasks in next 3 days (user assigned the task to someone else)</p></td>
           <td><span class="badge badge-update">Update</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -302,7 +289,7 @@
               <li>Interactions Report</li>
               <li>Interactions Hub Tasks tab</li>
             </ul>
-            <span class="row-flag">[C4-Row4] Retention inferred from "Upcoming Task" family — not given separately</span>
+            <span class="row-flag">[C4-Row4] Retention inferred from "Upcoming Task" family (Row 3) — confirmed correct by stakeholder</span>
           </td>
           <td>
             <ul class="duration-list">
@@ -314,13 +301,13 @@
           </td>
         </tr>
 
-        <!-- Row 5 -->
+        <!-- Row 5 / Trigger 5: Assigned Task Deleted -->
         <tr class="data-row" data-type="Update" data-group="interactions">
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">A task you assigned to another user has been deleted</p></td>
           <td><span class="badge badge-update">Update</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Int. Hub</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -342,13 +329,13 @@
         <!-- ═══════ GROUP 2 · OPPORTUNITY DETAILS / OPPORTUNITIES ═══════ -->
         <tr class="group-header" data-group="opportunity"><td colspan="7">Opportunity Details / Opportunities</td></tr>
 
-        <!-- Row 6 -->
+        <!-- Row 6 / Trigger 6: Deal Attribute Updated -->
         <tr class="data-row" data-type="Update" data-group="opportunity">
           <td><span class="source-label">Opportunity Details / Opportunities</span></td>
           <td><p class="trigger-text">Banker updates a key deal attribute, such as (but not limited to) probability, coverage, estimated close date, or estimated fee.</p></td>
           <td><span class="badge badge-update">Update</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Opportunities Page</span><span class="tag">Opportunities Widget</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -369,13 +356,13 @@
           </td>
         </tr>
 
-        <!-- Row 7 -->
+        <!-- Row 7 / Trigger 7: Deal Stage Changed to Closed -->
         <tr class="data-row" data-type="Alert" data-group="opportunity">
           <td><span class="source-label">Opportunity Details / Opportunities</span></td>
           <td><p class="trigger-text">Change in Deal State to Closed-Won</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Opportunities Page</span><span class="tag">Opportunities Widget</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Opportunities Widget</span><span class="tag resolve">Teams Textbot</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -398,13 +385,13 @@
           </td>
         </tr>
 
-        <!-- Row 8 -->
+        <!-- Row 8 / Trigger 8: Deal Created & Coverage Updated -->
         <tr class="data-row" data-type="Update" data-group="opportunity">
           <td><span class="source-label">Opportunity Details</span></td>
           <td><p class="trigger-text">When new opportunity is created or coverage users updated to include banker they are alerted</p></td>
           <td><span class="badge badge-update">Update</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Opportunities Page</span><span class="tag">Opportunities Widget</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -428,13 +415,13 @@
         <!-- ═══════ GROUP 3 · ENGAGEMENT HEALTH ═══════ -->
         <tr class="group-header" data-group="engagement"><td colspan="7">Engagement Health</td></tr>
 
-        <!-- Row 9 -->
+        <!-- Row 9 / Trigger 9: Last Interaction Coming Due -->
         <tr class="data-row" data-type="Alert" data-group="engagement">
           <td><span class="source-label">Engagement Health</span></td>
           <td><p class="trigger-text">Banking's last interaction date is coming due in, or My Last Interaction Date is coming due — both within 2 weeks</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Engagement Health</span></div></td>
+          <td><div class="tags"><span class="tag depends">Depends</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -454,13 +441,13 @@
         <!-- ═══════ GROUP 4 · SIGNALS ═══════ -->
         <tr class="group-header" data-group="signals"><td colspan="7">Signals</td></tr>
 
-        <!-- Row 10 -->
+        <!-- Row 10 / Trigger 10: News Items Flagged for Action -->
         <tr class="data-row" data-type="Alert" data-group="signals">
           <td><span class="source-label">Signals</span></td>
           <td><p class="trigger-text">News item flagged for action</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
-          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Signals</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -478,19 +465,19 @@
         <!-- ═══════ GROUP 5 · APPROVALS QUEUE ═══════ -->
         <tr class="group-header" data-group="approvals"><td colspan="7">Approvals Queue</td></tr>
 
-        <!-- Row 11 -->
+        <!-- Row 11 / Trigger 11: Change Request Approved -->
         <tr class="data-row" data-type="Update" data-group="approvals">
           <td><span class="source-label">Approvals Queue</span></td>
           <td><p class="trigger-text">When another banker approves a client tier change, for example, that this banker's client tier change has been approved</p></td>
           <td><span class="badge badge-update">Update</span></td>
-          <td><div class="tags"><span class="tag">Operations</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
               <li>Opportunity Details</li>
             </ul>
-            <span class="row-flag">[C4-Row11] Trigger logic copy not explicitly updated — left as original</span>
+            <span class="row-flag">[C4-Row11] Trigger logic copy not explicitly updated in feedback (only retention given) — confirmed correct by stakeholder</span>
           </td>
           <td>
             <ul class="duration-list">
@@ -500,13 +487,13 @@
           </td>
         </tr>
 
-        <!-- Row 12 -->
+        <!-- Row 12 / Trigger 12: Change Requested -->
         <tr class="data-row" data-type="Update" data-group="approvals">
           <td><span class="source-label">Approvals Queue</span></td>
           <td><p class="trigger-text">Another banker on same deal team requests a deal attribute change that requires approval.</p></td>
           <td><span class="badge badge-update">Update</span></td>
-          <td><div class="tags"><span class="tag">Operations</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -522,13 +509,13 @@
         <!-- ═══════ GROUP 6 · HIERARCHY CASES ═══════ -->
         <tr class="group-header" data-group="hierarchy"><td colspan="7">Hierarchy Cases</td></tr>
 
-        <!-- Row 13 -->
+        <!-- Row 13 / Trigger 13: Change Request Approved -->
         <tr class="data-row" data-type="Update" data-group="hierarchy">
           <td><span class="source-label">Hierarchy Cases</span></td>
           <td><p class="trigger-text">When another banker approves a client legal entity change, for example, that this banker requested for an account they cover</p></td>
           <td><span class="badge badge-update">Update</span></td>
-          <td><div class="tags"><span class="tag">Operations</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
@@ -543,13 +530,13 @@
           </td>
         </tr>
 
-        <!-- Row 14 -->
+        <!-- Row 14 / Trigger 14: Change Requested -->
         <tr class="data-row" data-type="Update" data-group="hierarchy">
           <td><span class="source-label">Hierarchy Cases</span></td>
           <td><p class="trigger-text">Another banker on same deal team requests a change to the status of a covered account which requires approval.</p></td>
           <td><span class="badge badge-update">Update</span></td>
-          <td><div class="tags"><span class="tag">Operations</span></div></td>
-          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag na">N/A</span></div></td>
           <td>
             <ul class="store-list">
               <li>Activity Feed</li>
