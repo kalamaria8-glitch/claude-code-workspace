@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LevFin Pipeline Additional Fields</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: #f5f6f8;
+    margin: 0;
+    padding: 32px;
+    color: #1c1c1c;
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px 0;
+  }
+  .subtitle {
+    color: #666;
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+  .board {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .column {
+    flex: 1;
+    min-width: 280px;
+  }
+  .column-header {
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    color: #fff;
+    text-align: center;
+  }
+  .col-ok .column-header { background: #2f9e44; }
+  .col-hold .column-header { background: #e8970f; }
+  .col-no .column-header { background: #c92a2a; }
+
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    border-left: 6px solid #ccc;
+  }
+  .col-ok .card { border-left-color: #2f9e44; }
+  .col-hold .card { border-left-color: #e8970f; }
+  .col-no .card { border-left-color: #c92a2a; }
+
+  .card-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .field-row {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .field-label {
+    font-weight: 600;
+    color: #555;
+    display: block;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+  .field-value {
+    color: #222;
+  }
+  .empty {
+    color: #aaa;
+    font-style: italic;
+  }
+  .followup {
+    background: #fff8e1;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Leverage Finance Tracker — Additional Fields</h1>
+<div class="subtitle">CRM field disposition: action, usage pathway, dependencies, and open follow-ups</div>
+
+<div class="board">
+
+  <div class="column col-ok">
+    <div class="column-header">OK to Create</div>
+
+    <div class="card">
+      <div class="card-title">Pricing Date</div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value">To be created only for LF product</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Does this refer to the date that a LevFin deal was priced? Does this impact forecast?</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Expected Booking Date</div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value">To be created only for LF product</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Is this different from expected close date?</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">M&amp;A Credit</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Explicitly used to flag dealogic credit where M&amp;A fee not earnt</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Include via Linked Opportunity</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Bucket</div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Need more detail</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Committed</div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Need more detail</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Event Driven?</div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Need more detail</span></div>
+    </div>
+  </div>
+
+  <div class="column col-hold">
+    <div class="column-header">Hold</div>
+
+    <div class="card">
+      <div class="card-title">RWAs (USDm)</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Ideally feed in from Hector rather than bankers tracking exposure manually, since CRM already has plumbing with Hector to pull Spot, 3yr rolling, 1-day RWAs/RoRWAs.</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value">IT to analyze why Hector feed into CRM is broken (per Alexis examples). If not fixable quickly/accurately, may need new manual CRM fields — increasing LF tracking workload.</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">RWAs included in updated Account Details summary page — do they need tracking in Opportunity Details? Recommend leaving separate.</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">RWAs (GBPm)</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value empty">same as above</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value empty">same as above</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value empty">same as above</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">RoRWAs</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value empty">same as above</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value empty">same as above</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value empty">same as above</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">RoRWA as of date</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value empty">same as above</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value empty">same as above</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value empty">same as above</span></div>
+    </div>
+  </div>
+
+  <div class="column col-no">
+    <div class="column-header">Do Not Create in CRM</div>
+
+    <div class="card">
+      <div class="card-title">Sponsor/Tracker</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Business to use existing Sponsor allocation mechanisms to track Sponsor allocation (%) on FS backed deals</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value">Front Office Training refresher may be required. IT can own this.</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Does not including Sponsor allocation impact LevFin forecast?</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Comment</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Assess using existing Notes/Opportunity description features</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value">IT can build logic to extract notes relevant to/entered by LF team.</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Notes are being removed from Opportunities; commentary shifting to Interactions Reports and deal context concepts currently being developed.</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Deal</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Use Opportunity Linking to aggregate LF fees across tranches. Feature flexible to allow pulling aggregate fee inclusive or exclusive of Advisory fee on the acquisition.</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value">Front Office Training refresher may be required. IT can own this.</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Add section in Opportunity Details &amp; Opportunities Widgets for linked opportunities, including New Opp Modals</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">M&amp;A Fee (USDm)</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">M&amp;A already maintains the fee on the linked Acquisition opportunity. A separate LF-tracked M&amp;A fee risks data inconsistency — more scalable for M&amp;A desk to maintain it on their deal, pulled into linked LF tranches.</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value">Dependency risk if M&amp;A deal isn't updated. Jay to discuss with Anna/Jess on keeping M&amp;A pipeline current.</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Only include via linked Opportunity</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">New Relationship?</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Inherit/use CIB Fee history / IB Fee history flags from reporting IRIS to ascertain fee history with client vs. new prospect.</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value">Jay to check nuance where repeated lending occurs over years but NO fee history. Alexis: very rare.</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Recommend including fee history in Account Details page/subpages; low priority for forecast impact.</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Tiering Commentary</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">No longer required per Alexis. Use Client tiering where appropriate</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">No change</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Lead MD or D</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Scale up use of "Lead Product (LP)" designation created for ICB for this purpose</span></div>
+      <div class="field-row"><span class="field-label">Next Steps</span><span class="field-value">Make mandatory for LF. Only Ds/MDs can be designated as Lead Product partner.</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Add space in Opportunity Details for linked opportunities, including Lead Product partners</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">AMER</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Use location of Lead Product partners staffed to ascertain where "deal is run out of"</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">Add location / region assignment to linked opportunities or linked product partners</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">M&amp;A Role</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Derived from linked M&amp;A transaction</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">No change</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">M&amp;A Commentary</div>
+      <div class="field-row"><span class="field-label">Usage Pathway</span><span class="field-value">Derived from linked M&amp;A transaction description.</span></div>
+      <div class="field-row followup"><span class="field-label">Follow Up</span><span class="field-value">No change</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
