@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Notifications Framework</title>
   <style>
-    /* ─── Reset & Base ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -16,22 +15,10 @@
       padding: 24px;
     }
 
-    /* ─── Page Header ──────────────────────────────────────────────────── */
-    .page-header {
-      margin-bottom: 24px;
-    }
-    .page-header h1 {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-    }
-    .page-header p {
-      font-size: 11px;
-      color: #666;
-      margin-top: 4px;
-    }
+    .page-header { margin-bottom: 24px; }
+    .page-header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+    .page-header p { font-size: 11px; color: #666; margin-top: 4px; }
 
-    /* ─── Clarification Banner ─────────────────────────────────────────── */
     .clarification-banner {
       background: #fff8e1;
       border: 1px solid #f0c040;
@@ -43,11 +30,10 @@
       line-height: 1.6;
     }
     .clarification-banner strong { display: block; margin-bottom: 4px; font-size: 11.5px; }
-    .clarification-banner ol { padding-left: 16px; }
+    .clarification-banner ul { padding-left: 16px; }
     .clarification-banner li { margin-bottom: 3px; }
     .clarification-banner .flag { color: #b45309; font-weight: 600; }
 
-    /* ─── Table Wrapper ────────────────────────────────────────────────── */
     .table-wrapper {
       overflow-x: auto;
       background: #fff;
@@ -56,14 +42,8 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
 
-    /* ─── Table ────────────────────────────────────────────────────────── */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1100px;
-    }
+    table { width: 100%; border-collapse: collapse; min-width: 1300px; }
 
-    /* ─── Column Headers ───────────────────────────────────────────────── */
     thead tr th {
       background: #1a1a1a;
       color: #fff;
@@ -78,16 +58,14 @@
     }
     thead tr th:last-child { border-right: none; }
 
-    /* ─── Column widths ────────────────────────────────────────────────── */
-    col.c-source        { width: 120px; }
-    col.c-trigger       { width: 220px; }
-    col.c-type          { width: 80px; }
-    col.c-notified      { width: 160px; }
-    col.c-resolves      { width: 160px; }
-    col.c-stored        { width: 160px; }
-    col.c-duration      { width: 130px; }
+    col.c-source   { width: 130px; }
+    col.c-trigger  { width: 230px; }
+    col.c-type     { width: 80px; }
+    col.c-notified { width: 150px; }
+    col.c-resolves { width: 110px; }
+    col.c-stored   { width: 220px; }
+    col.c-duration { width: 260px; }
 
-    /* ─── Group Header Row ─────────────────────────────────────────────── */
     tr.group-header td {
       background: #f0f0f0;
       font-weight: 700;
@@ -100,22 +78,11 @@
       border-bottom: 1px solid #ddd;
     }
 
-    /* ─── Data Rows ────────────────────────────────────────────────────── */
-    tbody tr.data-row {
-      border-bottom: 1px solid #ebebeb;
-      transition: background 0.12s;
-    }
+    tbody tr.data-row { border-bottom: 1px solid #ebebeb; transition: background 0.12s; }
     tbody tr.data-row:hover { background: #fafafa; }
-
-    tbody tr.data-row td {
-      padding: 10px 12px;
-      vertical-align: top;
-      border-right: 1px solid #ebebeb;
-      line-height: 1.45;
-    }
+    tbody tr.data-row td { padding: 10px 12px; vertical-align: top; border-right: 1px solid #ebebeb; line-height: 1.45; }
     tbody tr.data-row td:last-child { border-right: none; }
 
-    /* ─── Badge: Update vs Alert ───────────────────────────────────────── */
     .badge {
       display: inline-block;
       padding: 3px 10px;
@@ -128,7 +95,6 @@
     .badge-alert  { background: #1a1a1a; color: #fff; }
     .badge-update { background: #fff; color: #1a1a1a; border: 1.5px solid #1a1a1a; }
 
-    /* ─── Tag Pills ────────────────────────────────────────────────────── */
     .tags { display: flex; flex-wrap: wrap; gap: 4px; }
     .tag {
       display: inline-block;
@@ -140,89 +106,43 @@
       color: #145e4e;
       border: 1px solid #b2ddd5;
     }
-    .tag.primary {
+    .tag.resolve {
       background: #5bcdb5;
       color: #fff;
       border-color: #3ab89f;
       font-weight: 700;
     }
-    .tag.purple-primary {
-      background: #c5b3e8;
-      color: #3b2578;
-      border-color: #a98fd4;
-      font-weight: 700;
-    }
-    .tag.purple-secondary {
-      background: #f0ebfa;
-      color: #6b4fa0;
-      border-color: #d4c3ee;
-    }
-    .tag.flagged {
-      background: #fff3cd;
-      color: #856404;
-      border-color: #ffe083;
-      font-style: italic;
-    }
-    .tag.neutral {
-      background: #f0f0f0;
-      color: #555;
-      border-color: #ddd;
-    }
 
-    /* ─── Trigger Logic text ───────────────────────────────────────────── */
-    .trigger-text {
-      font-size: 11px;
-      color: #333;
-      line-height: 1.5;
-    }
-    .trigger-text .partial {
-      color: #b45309;
-      font-style: italic;
-      font-size: 10px;
-    }
+    .trigger-text { font-size: 11px; color: #333; line-height: 1.5; }
+    .trigger-text .partial { color: #b45309; font-style: italic; font-size: 10px; }
+    .source-label { font-size: 11px; font-weight: 600; color: #222; }
 
-    /* ─── Source cell ──────────────────────────────────────────────────── */
-    .source-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: #222;
-    }
-
-    /* ─── Duration cell ────────────────────────────────────────────────── */
-    .duration-unknown {
-      font-size: 10px;
-      font-style: italic;
-      color: #b45309;
-    }
-
-    /* ─── Legend ───────────────────────────────────────────────────────── */
-    .legend {
-      margin-top: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
+    /* Storage / duration paired lists */
+    .store-list, .duration-list {
+      list-style: none;
       font-size: 10.5px;
-      color: #555;
+      line-height: 1.6;
     }
-    .legend-item { display: flex; align-items: center; gap: 6px; }
-    .legend-dot {
-      width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0;
+    .store-list li, .duration-list li {
+      padding: 1px 0;
+      border-bottom: 1px dashed #eee;
+    }
+    .store-list li:last-child, .duration-list li:last-child { border-bottom: none; }
+
+    .row-flag {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 9.5px;
+      font-style: italic;
+      color: #b45309;
+      background: #fff3cd;
+      border: 1px solid #ffe083;
+      border-radius: 3px;
+      padding: 1px 6px;
     }
 
-    /* ─── Filter Bar ───────────────────────────────────────────────────── */
-    .filter-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 16px;
-      align-items: center;
-    }
-    .filter-bar label {
-      font-size: 11px;
-      font-weight: 600;
-      color: #555;
-      margin-right: 2px;
-    }
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    .filter-bar label { font-size: 11px; font-weight: 600; color: #555; margin-right: 2px; }
     .filter-btn {
       padding: 4px 12px;
       border-radius: 3px;
@@ -239,27 +159,19 @@
 </head>
 <body>
 
-  <!-- ── Page Header ──────────────────────────────────────────────────── -->
   <div class="page-header">
     <h1>Notifications Framework</h1>
-    <p>Recreated from source matrix · Indicative Copy column removed · "For How Long" requires clarification (see banner below)</p>
+    <p>Updated per round 2 feedback · "Where User Can Resolve" simplified to Data Source · Retention durations added</p>
   </div>
 
-  <!-- ── Clarification Banner ─────────────────────────────────────────── -->
   <div class="clarification-banner">
-    <strong>⚠ Clarifications Needed — Human Review Required Before Finalising</strong>
-    <ol>
-      <li><span class="flag">[C1]</span> <strong>Column mapping for "Where User Is Notified":</strong> The original has both a standalone "Where user gets notified" column (col 1) AND a "Where to Resolve" section. I used col 1 as "Where User Is Notified" and the highlighted cell(s) from "Where to Resolve" as "How User Resolves." Please confirm this split is correct.</li>
-      <li><span class="flag">[C2]</span> <strong>Row 6 — Opportunity Details/Opportunities, Update — Trigger Logic:</strong> Text is partially legible. Appears to reference changes to Accountable Banker, Deal State, Est. Close Date, Jnl, Frc, Probability. Full wording not confirmed.</li>
-      <li><span class="flag">[C3]</span> <strong>Row 14 — Hierarchy Cases, Alert — "How User Resolves" highlight:</strong> Operations appears highlighted but Activity Feed state is visually ambiguous in the screenshot.</li>
-      <li><span class="flag">[C4]</span> <strong>"For How Long" column (ALL rows):</strong> Retention/duration is not stated anywhere in the original. Every cell in this column is marked as unconfirmed.</li>
-      <li><span class="flag">[C5]</span> <strong>Row 9 — Engagement Health — Trigger:</strong> Two thresholds visible ("3 days banking", "5 days my last interaction"). Unclear if these are two sub-scenarios or one combined rule. Preserved as single row per original visual.</li>
-      <li><span class="flag">[C6]</span> <strong>Row 6 — "Original data source NEW – Changelog":</strong> Label preserved exactly as visible. "NEW" designation meaning is not explained in source material.</li>
-      <li><span class="flag">[C7]</span> <strong>Non-highlighted cells in "Where to Resolve":</strong> Unclear if non-highlighted options (e.g. Activity Hub, Data Source) are inactive/unavailable or simply not-primary. All three are shown; primary is marked bold/teal.</li>
-    </ol>
+    <strong>⚠ Remaining Open Items</strong>
+    <ul>
+      <li><span class="flag">[C4-Row4]</span> Row 4 (Interactions Report — Update — "Upcoming Tasks... assigned to someone else") was not given its own retention entry in your feedback. It was grouped with the "Upcoming Task" trigger family (Row 3) since both share the same 3-day-upcoming-task logic. Flagged inline — confirm this is correct or provide a distinct retention set.</li>
+      <li><span class="flag">[C4-Row11]</span> Row 11 (Approvals Queue — Update — "Change Request Approved") trigger logic copy was not explicitly updated in your feedback (only retention was provided). Left unchanged.</li>
+    </ul>
   </div>
 
-  <!-- ── Filter Bar ────────────────────────────────────────────────────── -->
   <div class="filter-bar">
     <label>Filter by type:</label>
     <button class="filter-btn active" data-filter="all">All</button>
@@ -274,7 +186,6 @@
     <button class="filter-btn" data-group="hierarchy">Hierarchy Cases</button>
   </div>
 
-  <!-- ── Table ─────────────────────────────────────────────────────────── -->
   <div class="table-wrapper">
     <table>
       <colgroup>
@@ -292,50 +203,39 @@
           <th>Trigger Logic</th>
           <th>Update vs. Alert</th>
           <th>Where User Is Notified</th>
-          <th>How User Resolves</th>
+          <th>Where User Can Resolve</th>
           <th>Where Data Is Stored</th>
-          <th>For How Long <span style="font-weight:400;opacity:0.7">[C4]</span></th>
+          <th>For How Long</th>
         </tr>
       </thead>
       <tbody>
 
-        <!-- ═══════════════════════════════════════════════════════════════
-             GROUP 1 · INTERACTIONS REPORT
-        ════════════════════════════════════════════════════════════════ -->
-        <tr class="group-header" data-group="interactions">
-          <td colspan="7">Interactions Report</td>
-        </tr>
+        <!-- ═══════ GROUP 1 · INTERACTIONS REPORT ═══════ -->
+        <tr class="group-header" data-group="interactions"><td colspan="7">Interactions Report</td></tr>
 
         <!-- Row 1 -->
         <tr class="data-row" data-type="Alert" data-group="interactions">
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">Interaction Completed (user is attended); Interaction Report created to log notes</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Teams</span><span class="tag">Int. Hub</span><span class="tag">Int. Report</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-              <span class="tag">Teams</span>
-              <span class="tag">Int. Hub</span>
-              <span class="tag">Int. Report</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Teams Homepage</li>
+              <li>Interactions Report</li>
+              <li>Interactions Hub Calendar view</li>
+            </ul>
           </td>
           <td>
-            <!-- Primary: Data Source (highlighted teal in original) -->
-            <div class="tags">
-              <span class="tag primary">Data Source</span>
-              <span class="tag neutral">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 month "past due" after date of interaction</li>
+              <li>Indefinitely</li>
+              <li>1 week past date of notes logged</li>
+            </ul>
           </td>
-          <td>
-            <!-- Primary: Original data source (highlighted purple in original) -->
-            <div class="tags">
-              <span class="tag purple-primary">Original data source</span>
-              <span class="tag neutral">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
         <!-- Row 2 -->
@@ -343,31 +243,24 @@
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">Interaction Completed (user not attended; no deal team); Interaction Report created to log notes</p></td>
           <td><span class="badge badge-update">Update</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span><span class="tag">Teams</span><span class="tag">Int. Hub</span><span class="tag">Int. Report</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-              <span class="tag">Teams</span>
-              <span class="tag">Int. Hub</span>
-              <span class="tag">Int. Report</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Teams Homepage</li>
+              <li>Interactions Report</li>
+              <li>Interactions Hub Calendar view</li>
+            </ul>
           </td>
           <td>
-            <!-- Primary: Activity Feed (highlighted teal in original) -->
-            <div class="tags">
-              <span class="tag neutral">Data Source</span>
-              <span class="tag primary">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 month past due after date of interaction</li>
+              <li>Indefinitely</li>
+              <li>1 week past date of notes logged</li>
+            </ul>
           </td>
-          <td>
-            <!-- Primary: No trail (highlighted purple in original) -->
-            <div class="tags">
-              <span class="tag neutral">Original data source</span>
-              <span class="tag purple-primary">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
         <!-- Row 3 -->
@@ -375,26 +268,24 @@
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">Upcoming Tasks in next 3 days (user has been assigned the task)</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Teams Homepage</li>
+              <li>Interactions Report</li>
+              <li>Interactions Hub Tasks tab</li>
+            </ul>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag primary">Data Source</span>
-              <span class="tag neutral">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 month past due after date of interaction</li>
+              <li>Indefinitely</li>
+              <li>1 month past due date</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag purple-primary">Original data source</span>
-              <span class="tag neutral">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
         <!-- Row 4 -->
@@ -402,26 +293,25 @@
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">Upcoming Tasks in next 3 days (user assigned the task to someone else)</p></td>
           <td><span class="badge badge-update">Update</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Teams Homepage</li>
+              <li>Interactions Report</li>
+              <li>Interactions Hub Tasks tab</li>
+            </ul>
+            <span class="row-flag">[C4-Row4] Retention inferred from "Upcoming Task" family — not given separately</span>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag neutral">Data Source</span>
-              <span class="tag primary">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 month past due after date of interaction</li>
+              <li>Indefinitely</li>
+              <li>1 month past due date</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag neutral">Original data source</span>
-              <span class="tag purple-primary">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
         <!-- Row 5 -->
@@ -429,66 +319,54 @@
           <td><span class="source-label">Interactions Report</span></td>
           <td><p class="trigger-text">A task you assigned to another user has been deleted</p></td>
           <td><span class="badge badge-update">Update</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Teams Homepage</li>
+              <li>Interactions Report (shows as deleted)</li>
+              <li>Interactions Hub Tasks tab</li>
+            </ul>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag neutral">Data Source</span>
-              <span class="tag primary">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 month past due after date of interaction</li>
+              <li>Indefinitely</li>
+              <li>1 week past date of update</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag neutral">Original data source</span>
-              <span class="tag purple-primary">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
-        <!-- ═══════════════════════════════════════════════════════════════
-             GROUP 2 · OPPORTUNITY DETAILS / OPPORTUNITIES
-        ════════════════════════════════════════════════════════════════ -->
-        <tr class="group-header" data-group="opportunity">
-          <td colspan="7">Opportunity Details / Opportunities</td>
-        </tr>
+        <!-- ═══════ GROUP 2 · OPPORTUNITY DETAILS / OPPORTUNITIES ═══════ -->
+        <tr class="group-header" data-group="opportunity"><td colspan="7">Opportunity Details / Opportunities</td></tr>
 
         <!-- Row 6 -->
         <tr class="data-row" data-type="Update" data-group="opportunity">
           <td><span class="source-label">Opportunity Details / Opportunities</span></td>
-          <td>
-            <p class="trigger-text">
-              After user creates a change to Accountable Banker, Deal State, Est. Close Date, Jnl, Frc, Probability on a deal this user is staffed on
-              <span class="partial"> — [C2] Trigger text partially legible; verify full wording</span>
-            </p>
-          </td>
+          <td><p class="trigger-text">Banker updates a key deal attribute, such as (but not limited to) probability, coverage, estimated close date, or estimated fee.</p></td>
           <td><span class="badge badge-update">Update</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Opportunity Details</li>
+              <li>Opportunities widget</li>
+              <li>Change Log</li>
+              <li>Weekly Change Digest</li>
+            </ul>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag neutral">Data Source</span>
-              <span class="tag primary">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 week past date of alert/update</li>
+              <li>1 week past date of alert/update</li>
+              <li>1 year past date of alert/update</li>
+              <li>1 month past date of alert/update</li>
+            </ul>
           </td>
-          <td>
-            <!-- "Original data source NEW – Changelog" — preserved exactly as visible [C6] -->
-            <div class="tags">
-              <span class="tag purple-primary">Original data source NEW – Changelog <span style="font-size:9px">[C6]</span></span>
-              <span class="tag neutral">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
         <!-- Row 7 -->
@@ -496,26 +374,28 @@
           <td><span class="source-label">Opportunity Details / Opportunities</span></td>
           <td><p class="trigger-text">Change in Deal State to Closed-Won</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Textbot</li>
+              <li>Opportunity Details</li>
+              <li>Opportunities widget</li>
+              <li>Change Log</li>
+              <li>Weekly Change Digest</li>
+            </ul>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag primary">Data Source</span>
-              <span class="tag neutral">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 month past date of alert/update</li>
+              <li>1 week past date of alert/update</li>
+              <li>1 week past date of alert/update</li>
+              <li>1 year past date of alert/update</li>
+              <li>1 month past date of alert/update</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag purple-primary">Original data source</span>
-              <span class="tag neutral">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
         <!-- Row 8 -->
@@ -523,297 +403,197 @@
           <td><span class="source-label">Opportunity Details</span></td>
           <td><p class="trigger-text">When new opportunity is created or coverage users updated to include banker they are alerted</p></td>
           <td><span class="badge badge-update">Update</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Opportunity Details</li>
+              <li>Opportunities widget</li>
+              <li>Change Log</li>
+              <li>Weekly Change Digest</li>
+            </ul>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag neutral">Data Source</span>
-              <span class="tag primary">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 week past date of alert/update</li>
+              <li>1 week past date of alert/update</li>
+              <li>1 year past date of alert/update</li>
+              <li>1 month past date of alert/update</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag neutral">Original data source</span>
-              <span class="tag purple-primary">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
-        <!-- ═══════════════════════════════════════════════════════════════
-             GROUP 3 · ENGAGEMENT HEALTH
-        ════════════════════════════════════════════════════════════════ -->
-        <tr class="group-header" data-group="engagement">
-          <td colspan="7">Engagement Health</td>
-        </tr>
+        <!-- ═══════ GROUP 3 · ENGAGEMENT HEALTH ═══════ -->
+        <tr class="group-header" data-group="engagement"><td colspan="7">Engagement Health</td></tr>
 
         <!-- Row 9 -->
         <tr class="data-row" data-type="Alert" data-group="engagement">
           <td><span class="source-label">Engagement Health</span></td>
-          <td>
-            <p class="trigger-text">
-              Banking's last interaction date coming past due in 3 days; My last Interaction date coming past due in 5 days
-              <span class="partial"> — [C5] Unclear if these are two sub-scenarios or one combined rule</span>
-            </p>
-          </td>
+          <td><p class="trigger-text">Banking's last interaction date is coming due in, or My Last Interaction Date is coming due — both within 2 weeks</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Engagement Health</li>
+              <li>Interactions page</li>
+            </ul>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag primary">Data Source</span>
-              <span class="tag neutral">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 year "past due" (after which client marked 'inactive')</li>
+              <li>Indefinitely (after 1 year past due, client becomes 'inactive')</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag purple-primary">Original data source</span>
-              <span class="tag neutral">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
-        <!-- ═══════════════════════════════════════════════════════════════
-             GROUP 4 · SIGNALS
-        ════════════════════════════════════════════════════════════════ -->
-        <tr class="group-header" data-group="signals">
-          <td colspan="7">Signals</td>
-        </tr>
+        <!-- ═══════ GROUP 4 · SIGNALS ═══════ -->
+        <tr class="group-header" data-group="signals"><td colspan="7">Signals</td></tr>
 
         <!-- Row 10 -->
         <tr class="data-row" data-type="Alert" data-group="signals">
           <td><span class="source-label">Signals</span></td>
           <td><p class="trigger-text">News item flagged for action</p></td>
           <td><span class="badge badge-alert">Alert</span></td>
+          <td><div class="tags"><span class="tag">Activity Feed</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Activity Feed</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Signals</li>
+            </ul>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag primary">Data Source</span>
-              <span class="tag neutral">Activity Feed</span>
-              <span class="tag neutral">Activity Hub</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>90 days</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag neutral">Original data source</span>
-              <span class="tag purple-primary">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
-        <!-- ═══════════════════════════════════════════════════════════════
-             GROUP 5 · APPROVALS QUEUE
-        ════════════════════════════════════════════════════════════════ -->
-        <tr class="group-header" data-group="approvals">
-          <td colspan="7">Approvals Queue</td>
-        </tr>
+        <!-- ═══════ GROUP 5 · APPROVALS QUEUE ═══════ -->
+        <tr class="group-header" data-group="approvals"><td colspan="7">Approvals Queue</td></tr>
 
         <!-- Row 11 -->
         <tr class="data-row" data-type="Update" data-group="approvals">
           <td><span class="source-label">Approvals Queue</span></td>
           <td><p class="trigger-text">When another banker approves a client tier change, for example, that this banker's client tier change has been approved</p></td>
           <td><span class="badge badge-update">Update</span></td>
+          <td><div class="tags"><span class="tag">Operations</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Operations</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Opportunity Details</li>
+            </ul>
+            <span class="row-flag">[C4-Row11] Trigger logic copy not explicitly updated — left as original</span>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag neutral">Data Source</span>
-              <span class="tag primary">Activity Feed</span>
-              <span class="tag neutral">Operations</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 week past date of update</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag neutral">Original data source</span>
-              <span class="tag purple-primary">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
         <!-- Row 12 -->
-        <tr class="data-row" data-type="Alert" data-group="approvals">
+        <tr class="data-row" data-type="Update" data-group="approvals">
           <td><span class="source-label">Approvals Queue</span></td>
-          <td><p class="trigger-text">When another banker requests a client tier change, for example, that this banker needs to approve</p></td>
-          <td><span class="badge badge-alert">Alert</span></td>
+          <td><p class="trigger-text">Another banker on same deal team requests a deal attribute change that requires approval.</p></td>
+          <td><span class="badge badge-update">Update</span></td>
+          <td><div class="tags"><span class="tag">Operations</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Operations</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+            </ul>
           </td>
           <td>
-            <!-- Both Activity Feed and Operations highlighted teal in original -->
-            <div class="tags">
-              <span class="tag neutral">Data Source</span>
-              <span class="tag primary">Activity Feed</span>
-              <span class="tag primary">Operations</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag neutral">Original data source</span>
-              <span class="tag purple-primary">No trail</span>
-              <span class="tag neutral">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
-        <!-- ═══════════════════════════════════════════════════════════════
-             GROUP 6 · HIERARCHY CASES
-        ════════════════════════════════════════════════════════════════ -->
-        <tr class="group-header" data-group="hierarchy">
-          <td colspan="7">Hierarchy Cases</td>
-        </tr>
+        <!-- ═══════ GROUP 6 · HIERARCHY CASES ═══════ -->
+        <tr class="group-header" data-group="hierarchy"><td colspan="7">Hierarchy Cases</td></tr>
 
         <!-- Row 13 -->
         <tr class="data-row" data-type="Update" data-group="hierarchy">
           <td><span class="source-label">Hierarchy Cases</span></td>
           <td><p class="trigger-text">When another banker approves a client legal entity change, for example, that this banker requested for an account they cover</p></td>
           <td><span class="badge badge-update">Update</span></td>
+          <td><div class="tags"><span class="tag">Operations</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Operations</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+              <li>Opportunity Details</li>
+            </ul>
           </td>
           <td>
-            <div class="tags">
-              <span class="tag neutral">Data Source</span>
-              <span class="tag primary">Activity Feed</span>
-              <span class="tag neutral">Operations</span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+              <li>1 week past date of update</li>
+            </ul>
           </td>
-          <td>
-            <!-- Primary: Consolidated data trail (highlighted purple in original) -->
-            <div class="tags">
-              <span class="tag neutral">Original data source</span>
-              <span class="tag neutral">No trail</span>
-              <span class="tag purple-primary">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
         <!-- Row 14 -->
-        <tr class="data-row" data-type="Alert" data-group="hierarchy">
+        <tr class="data-row" data-type="Update" data-group="hierarchy">
           <td><span class="source-label">Hierarchy Cases</span></td>
-          <td><p class="trigger-text">When another banker requests a client legal entity change, for example, that this banker has clearance to approve</p></td>
-          <td><span class="badge badge-alert">Alert</span></td>
+          <td><p class="trigger-text">Another banker on same deal team requests a change to the status of a covered account which requires approval.</p></td>
+          <td><span class="badge badge-update">Update</span></td>
+          <td><div class="tags"><span class="tag">Operations</span></div></td>
+          <td><div class="tags"><span class="tag resolve">Data Source</span></div></td>
           <td>
-            <div class="tags">
-              <span class="tag">Operations</span>
-            </div>
+            <ul class="store-list">
+              <li>Activity Feed</li>
+            </ul>
           </td>
           <td>
-            <!-- [C3] Operations appears highlighted; Activity Feed state ambiguous -->
-            <div class="tags">
-              <span class="tag neutral">Data Source</span>
-              <span class="tag neutral">Activity Feed</span>
-              <span class="tag primary">Operations <span style="font-size:9px">[C3]</span></span>
-            </div>
+            <ul class="duration-list">
+              <li>90 days past date of alert/update</li>
+            </ul>
           </td>
-          <td>
-            <div class="tags">
-              <span class="tag neutral">Original data source</span>
-              <span class="tag neutral">No trail</span>
-              <span class="tag purple-primary">Consolidated data trail</span>
-            </div>
-          </td>
-          <td><span class="duration-unknown">Not stated [C4]</span></td>
         </tr>
 
       </tbody>
     </table>
   </div>
 
-  <!-- ── Legend ────────────────────────────────────────────────────────── -->
-  <div class="legend">
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#5bcdb5;border:1px solid #3ab89f"></div>
-      <span>Primary resolution path (highlighted in original)</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#c5b3e8;border:1px solid #a98fd4"></div>
-      <span>Primary data trail (highlighted in original)</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#f0f0f0;border:1px solid #ddd"></div>
-      <span>Non-primary option (not highlighted in original) [C7]</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#fff3cd;border:1px solid #ffe083"></div>
-      <span>⚠ Requires human clarification</span>
-    </div>
-  </div>
-
-  <!-- ── Filter Script ─────────────────────────────────────────────────── -->
   <script>
-    // Filter by Alert/Update type
     document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-
         const filter = btn.dataset.filter;
         document.querySelectorAll('tr.data-row').forEach(row => {
-          if (filter === 'all' || row.dataset.type === filter) {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
-          }
+          row.style.display = (filter === 'all' || row.dataset.type === filter) ? '' : 'none';
         });
-        // Show/hide group headers based on whether any rows in group are visible
         document.querySelectorAll('tr.group-header').forEach(header => {
           const group = header.dataset.group;
-          const visibleRows = document.querySelectorAll(`tr.data-row[data-group="${group}"]`);
-          const anyVisible = Array.from(visibleRows).some(r => r.style.display !== 'none');
+          const anyVisible = Array.from(document.querySelectorAll(`tr.data-row[data-group="${group}"]`)).some(r => r.style.display !== 'none');
           header.style.display = anyVisible ? '' : 'none';
         });
       });
     });
 
-    // Filter by source/group
     document.querySelectorAll('.filter-btn[data-group]').forEach(btn => {
       btn.addEventListener('click', () => {
         const isActive = btn.classList.contains('active');
-
-        // Reset all group filters
         document.querySelectorAll('.filter-btn[data-group]').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('tr.data-row, tr.group-header').forEach(r => r.style.display = '');
-
         if (!isActive) {
           btn.classList.add('active');
           const group = btn.dataset.group;
-          document.querySelectorAll('tr.data-row').forEach(row => {
-            row.style.display = row.dataset.group === group ? '' : 'none';
-          });
-          document.querySelectorAll('tr.group-header').forEach(header => {
-            header.style.display = header.dataset.group === group ? '' : 'none';
-          });
+          document.querySelectorAll('tr.data-row').forEach(row => { row.style.display = row.dataset.group === group ? '' : 'none'; });
+          document.querySelectorAll('tr.group-header').forEach(header => { header.style.display = header.dataset.group === group ? '' : 'none'; });
         }
-
-        // Re-apply type filter if one is active
         const activeTypeFilter = document.querySelector('.filter-btn[data-filter].active');
         if (activeTypeFilter && activeTypeFilter.dataset.filter !== 'all') {
           const filter = activeTypeFilter.dataset.filter;
