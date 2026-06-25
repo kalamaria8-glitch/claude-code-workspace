@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deal Wins Breakdown — Simplified v2</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a2e; }
+
+/* NAV */
+.page-nav {
+  background: #fff; border-bottom: 1px solid #e0e4ed;
+  padding: 16px 32px 0; position: sticky; top: 0; z-index: 100;
+  display: flex; flex-direction: column; gap: 0;
+}
+.nav-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.nav-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #9ca3af; }
+.vtabs { display: flex; gap: 0; }
+.vtab { padding: 9px 22px; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; color: #6b7280; user-select: none; }
+.vtab.active { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+
+.variation { display: none; padding: 28px 32px 64px; max-width: 1100px; margin: 0 auto; }
+.variation.active { display: block; }
+
+/* SHARED */
+.card { background: #fff; border-radius: 12px; border: 1px solid #e5e9f2; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+.filter-row { display: flex; gap: 7px; }
+.fp { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1.5px solid #e0e4ed; background: #fff; color: #374151; cursor: pointer; }
+.fp.active { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+.lbl { font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: #9ca3af; }
+
+/* dot */
+.dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.g { background: #22c55e; }
+.a { background: #fbbf24; }
+.r { background: #f87171; }
+.e { background: #e5e7eb; }
+
+/* pill */
+.pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.pill-g { background: #dcfce7; color: #15803d; }
+.pill-a { background: #fef3c7; color: #b45309; }
+.pill-r { background: #fee2e2; color: #b91c1c; }
+.pill-b { background: #dbeafe; color: #1d4ed8; }
+
+/* dash header reuse */
+.dash-shell { padding: 18px 20px 0; margin-bottom: 20px; }
+.dash-title { font-size: 20px; font-weight: 800; color: #111827; display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+.dash-date { font-size: 12px; color: #9ca3af; margin-bottom: 12px; }
+.dash-tabs { display: flex; gap: 0; border-bottom: 1px solid #e5e9f2; }
+.dtab { padding: 9px 14px; font-size: 13px; color: #6b7280; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.dtab.active { color: #1d4ed8; border-bottom-color: #1d4ed8; font-weight: 600; }
+.dash-topbar { display: flex; align-items: flex-start; justify-content: space-between; }
+
+/* ═══════════════════════════════
+   VARIATION A — SPECTRUM + CARDS
+   Fee bar is the anchor/selector;
+   ultra-minimal cards below
+   ═══════════════════════════════ */
+.va-spectrum { padding: 20px 24px 16px; margin-bottom: 16px; }
+.va-spec-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+.va-spec-title span { font-size: 11px; color: #9ca3af; font-weight: 500; }
+
+.va-track-wrap { position: relative; margin-bottom: 6px; }
+.va-track {
+  height: 44px; border-radius: 10px; display: flex; overflow: hidden;
+  border: 1px solid #e5e9f2;
+}
+.va-zone { display: flex; align-items: center; justify-content: center; position: relative; }
+.va-zone-below { flex: 2.8; background: #fff5f5; border-right: 1px solid #fecaca; }
+.va-zone-in    { flex: 3.6; background: #f0fdf4; border-right: 1px solid #bbf7d0; }
+.va-zone-above { flex: 3.6; background: #eff6ff; }
+.va-zone-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+.va-zone-below .va-zone-lbl { color: #fca5a5; }
+.va-zone-in    .va-zone-lbl { color: #86efac; }
+.va-zone-above .va-zone-lbl { color: #93c5fd; }
+
+/* deal dots on spectrum */
+.va-dots-row { position: relative; height: 48px; }
+.va-ddot {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; color: #fff; cursor: pointer;
+  border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  transition: transform .12s, box-shadow .12s;
+}
+.va-ddot:hover, .va-ddot.selected { transform: translate(-50%,-50%) scale(1.15); box-shadow: 0 4px 16px rgba(0,0,0,.25); }
+.va-ddot-label { position: absolute; top: 38px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 700; color: #6b7280; white-space: nowrap; }
+
+.va-range-legend { display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; padding: 0 2px; }
+
+/* signal summary pills under spectrum */
+.va-summary-row { display: flex; gap: 8px; margin-top: 10px; }
+.va-sum { flex: 1; text-align: center; padding: 8px 4px; border-radius: 8px; }
+.va-sum.r { background: #fff5f5; border: 1px solid #fecaca; }
+.va-sum.gr { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.va-sum.b { background: #eff6ff; border: 1px solid #bfdbfe; }
+.va-sum .pct { font-size: 22px; font-weight: 800; }
+.va-sum.r .pct { color: #dc2626; }
+.va-sum.gr .pct { color: #16a34a; }
+.va-sum.b .pct { color: #1d4ed8; }
+.va-sum .sub { font-size: 10px; color: #6b7280; font-weight: 600; }
+
+/* deal cards — ultra minimal */
+.va-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.va-card {
+  border: 1.5px solid #e5e9f2; border-radius: 10px; overflow: hidden;
+  cursor: pointer; transition: border-color .12s, box-shadow .12s;
+}
+.va-card:hover { border-color: #c7d2fe; box-shadow: 0 2px 12px rgba(99,102,241,.1); }
+.va-card.selected { border-color: #1d4ed8; box-shadow: 0 2px 14px rgba(29,78,216,.15); }
+.va-card-top { display: flex; align-items: center; padding: 12px 14px 10px; gap: 8px; }
+.va-card-name { font-size: 13px; font-weight: 700; color: #111827; }
+.va-card-type { font-size: 10px; font-weight: 600; color: #9ca3af; }
+.va-card-size { margin-left: auto; font-size: 15px; font-weight: 800; color: #111827; }
+.va-wqi { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 800; }
+.wqi-h { background: #dcfce7; color: #15803d; }
+.wqi-m { background: #fef3c7; color: #92400e; }
+.wqi-l { background: #fee2e2; color: #991b1b; }
+
+.va-signals { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid #f3f4f6; }
+.va-sig { padding: 10px 12px; border-right: 1px solid #f3f4f6; }
+.va-sig:last-child { border-right: none; }
+.va-sig-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #c4c9d4; margin-bottom: 5px; }
+.va-sig-val { font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+.dots-row { display: flex; gap: 3px; }
+
+/* ═══════════════════════════════
+   VARIATION B — SIGNAL MATRIX
+   3 signal columns, deals as rows;
+   very compact, comparison-first
+   ═══════════════════════════════ */
+.vb-header-row { display: grid; grid-template-columns: 200px 1fr 1fr 1fr 100px; gap: 0; margin-bottom: 4px; padding: 0 4px; }
+.vb-col-head { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #9ca3af; padding: 0 16px 8px; }
+.vb-col-head:first-child { padding-left: 4px; }
+
+.vb-row {
+  display: grid; grid-template-columns: 200px 1fr 1fr 1fr 100px;
+  gap: 0; border: 1px solid #e5e9f2; border-radius: 10px;
+  margin-bottom: 8px; background: #fff; overflow: hidden;
+  cursor: pointer; transition: box-shadow .12s, border-color .12s;
+}
+.vb-row:hover { border-color: #c7d2fe; box-shadow: 0 2px 10px rgba(99,102,241,.1); }
+
+.vb-cell { padding: 14px 16px; border-right: 1px solid #f3f4f6; display: flex; flex-direction: column; justify-content: center; }
+.vb-cell:last-child { border-right: none; }
+
+/* deal name cell */
+.vb-name { font-size: 13px; font-weight: 700; color: #111827; }
+.vb-meta { font-size: 11px; color: #9ca3af; margin-top: 1px; }
+
+/* signal cells */
+.vb-signal-main { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.vb-blocks { display: flex; gap: 3px; }
+.vb-block { height: 16px; border-radius: 3px; flex: 1; }
+
+/* fee cell special */
+.vb-fee-num { font-size: 18px; font-weight: 800; margin-bottom: 2px; }
+.vb-fee-bar { height: 4px; border-radius: 2px; margin-top: 6px; }
+
+/* win margin cell */
+.vb-margin { font-size: 14px; font-weight: 800; }
+
+/* bottom insight bar */
+.vb-insight {
+  margin-top: 16px; padding: 14px 18px; background: #fff;
+  border-radius: 10px; border: 1px solid #e5e9f2;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
+}
+.vb-ins-col { padding: 0 16px; border-right: 1px solid #f3f4f6; }
+.vb-ins-col:last-child { border-right: none; }
+.vb-ins-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #9ca3af; margin-bottom: 8px; }
+.vb-ins-stat { font-size: 22px; font-weight: 800; }
+.vb-ins-sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+
+/* ═══════════════════════════════
+   VARIATION C — SCATTER + STRIP
+   Scatter stays; BELOW it add the
+   fee spectrum strip so both views
+   are visible simultaneously; no
+   right panel—tooltip on hover
+   ═══════════════════════════════ */
+.vc-scatter { position: relative; height: 320px; background: #fafbfc; border-radius: 10px; border: 1px solid #e5e9f2; overflow: hidden; }
+
+/* zone backgrounds in scatter */
+.vc-below-bg { position: absolute; left:0; width:28%; top:0; bottom:0; background: rgba(254,226,226,.4); }
+.vc-in-bg    { position: absolute; left:28%; width:37%; top:0; bottom:0; background: rgba(220,252,231,.35); }
+.vc-above-bg { position: absolute; left:65%; right:0; top:0; bottom:0; background: rgba(219,234,254,.35); }
+
+.vc-midline  { position: absolute; left:0; right:0; top:50%; height:1px; background: #e5e9f2; }
+.vc-vline1   { position: absolute; left:28%; top:0; bottom:0; width:1px; background: #e5e9f2; }
+.vc-vline2   { position: absolute; left:65%; top:0; bottom:0; width:1px; background: #e5e9f2; }
+
+.vc-zlabel { position: absolute; top: 10px; font-size: 9px; font-weight: 700; letter-spacing:.07em; text-transform:uppercase; }
+
+.vc-bubble {
+  position: absolute; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; color: #fff; cursor: pointer;
+  border: 3px solid rgba(255,255,255,.85);
+  box-shadow: 0 2px 10px rgba(0,0,0,.18);
+  transition: all .14s; font-size: 10px;
+  transform: translate(-50%, -50%);
+}
+.vc-bubble:hover { box-shadow: 0 4px 20px rgba(0,0,0,.28); transform: translate(-50%,-50%) scale(1.12); z-index: 10; }
+.vc-bubble.selected { border-color: #1d4ed8; box-shadow: 0 0 0 4px rgba(29,78,216,.25); z-index: 10; }
+
+.vc-axis-x { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing:.06em; color: #9ca3af; }
+.vc-axis-y { position: absolute; left: 8px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: center; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing:.06em; color: #9ca3af; white-space: nowrap; }
+
+/* tooltip */
+.vc-tooltip {
+  position: absolute; background: #111827; color: #fff; border-radius: 8px;
+  padding: 10px 14px; font-size: 12px; pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,.3); min-width: 180px; z-index: 20;
+  opacity: 0; transition: opacity .12s;
+}
+.vc-tooltip.visible { opacity: 1; }
+.vc-tooltip-name { font-weight: 800; font-size: 13px; margin-bottom: 6px; }
+.vc-tooltip-row { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 3px; font-size: 11px; color: rgba(255,255,255,.75); }
+.vc-tooltip-row span:last-child { color: #fff; font-weight: 600; }
+
+/* spectrum strip below scatter */
+.vc-strip-wrap { margin-top: 14px; padding: 16px 20px; }
+.vc-strip-title { font-size: 12px; font-weight: 700; color: #111827; margin-bottom: 10px; }
+.vc-strip-track { position: relative; height: 40px; border-radius: 8px; display: flex; overflow: hidden; margin-bottom: 32px; border: 1px solid #e5e9f2; }
+.vc-strip-below { flex: 2.8; background: #fff5f5; }
+.vc-strip-in    { flex: 3.6; background: #f0fdf4; border-left: 1px solid #bbf7d0; border-right: 1px solid #bbf7d0; }
+.vc-strip-above { flex: 3.6; background: #eff6ff; }
+.vc-strip-dots  { position: absolute; top: 0; left: 0; right: 0; height: 100%; pointer-events: none; }
+.vc-sdot {
+  position: absolute; top: 50%; transform: translate(-50%,-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 800; color: #fff;
+  border: 2.5px solid rgba(255,255,255,.9); box-shadow: 0 1px 6px rgba(0,0,0,.18);
+  cursor: pointer; pointer-events: all;
+}
+.vc-sdot-lbl { position: absolute; top: 32px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 700; color: #6b7280; white-space: nowrap; }
+.vc-strip-legend { display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; font-weight: 600; }
+
+/* bottom 3-bar summary */
+.vc-bars { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 14px; }
+.vc-bar-card { padding: 14px 16px; background: #fff; border-radius: 10px; border: 1px solid #e5e9f2; }
+.vc-bar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing:.07em; color: #9ca3af; margin-bottom: 8px; }
+.vc-bar-stat { font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 2px; }
+.vc-bar-sub { font-size: 11px; color: #6b7280; margin-bottom: 8px; }
+.vc-track { height: 6px; background: #f3f4f6; border-radius: 3px; overflow: hidden; }
+.vc-fill { height: 100%; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="page-nav">
+  <div class="nav-top">
+    <div class="nav-label">Deal Wins Breakdown — Simplified v2</div>
+    <div class="filter-row">
+      <div class="fp active">All</div>
+      <div class="fp">M&A</div>
+      <div class="fp">Lev Fin</div>
+      <div class="fp">ECM</div>
+      <div class="fp">DCM</div>
+    </div>
+  </div>
+  <div class="vtabs">
+    <div class="vtab active" onclick="showV('a')">A &nbsp;·&nbsp; Spectrum + Cards</div>
+    <div class="vtab" onclick="showV('b')">B &nbsp;·&nbsp; Signal Matrix</div>
+    <div class="vtab" onclick="showV('c')">C &nbsp;·&nbsp; Scatter + Strip</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     VARIATION A — SPECTRUM + CARDS
+     Fee spectrum bar is the map;
+     cards below are minimal 3-dot rows
+     ══════════════════════════════════════ -->
+<div class="variation active" id="va">
+  <div class="card" style="padding: 18px 20px 0; margin-bottom: 18px;">
+    <div class="dash-topbar">
+      <div>
+        <div class="dash-title">Deal Conversion</div>
+        <div class="dash-date">August, 2025 – Present</div>
+      </div>
+    </div>
+    <div class="dash-tabs">
+      <div class="dtab">Summary</div><div class="dtab">Losses Breakdown</div><div class="dtab active">Wins Breakdown</div>
+    </div>
+  </div>
+
+  <!-- SPECTRUM BAR -->
+  <div class="card va-spectrum" style="margin-bottom: 16px;">
+    <div class="va-spec-title">
+      Fee % vs. Target Range
+      <span>Click any deal to highlight below</span>
+    </div>
+
+    <!-- Zone track -->
+    <div class="va-track">
+      <div class="va-zone va-zone-below"><span class="va-zone-lbl">Below range</span></div>
+      <div class="va-zone va-zone-in"><span class="va-zone-lbl">Within range</span></div>
+      <div class="va-zone va-zone-above"><span class="va-zone-lbl">Above range</span></div>
+    </div>
+
+    <!-- Deal dots positioned over track -->
+    <div class="va-dots-row">
+      <div class="va-ddot" style="background:#ef4444; left:7%;" onclick="selectCard('meridian')" id="dot-meridian">M<div class="va-ddot-label">Meridian</div></div>
+      <div class="va-ddot" style="background:#f59e0b; left:16%;" onclick="selectCard('titan')" id="dot-titan">T<div class="va-ddot-label">Titan</div></div>
+      <div class="va-ddot" style="background:#f59e0b; left:23%;" onclick="selectCard('aurora')" id="dot-aurora">A<div class="va-ddot-label">Aurora</div></div>
+      <div class="va-ddot" style="background:#6366f1; left:36%;" onclick="selectCard('helios')" id="dot-helios">H<div class="va-ddot-label">Helios</div></div>
+      <div class="va-ddot" style="background:#6366f1; left:46%;" onclick="selectCard('cassini')" id="dot-cassini">C<div class="va-ddot-label">Cassini</div></div>
+      <div class="va-ddot" style="background:#6366f1; left:55%;" onclick="selectCard('vega')" id="dot-vega">V<div class="va-ddot-label">Vega</div></div>
+      <div class="va-ddot" style="background:#1d4ed8; left:70%;" onclick="selectCard('orion')" id="dot-orion">O<div class="va-ddot-label">Orion</div></div>
+      <div class="va-ddot" style="background:#0891b2; left:80%;" onclick="selectCard('atlas')" id="dot-atlas">At<div class="va-ddot-label">Atlas</div></div>
+      <div class="va-ddot" style="background:#0891b2; left:89%;" onclick="selectCard('nova')" id="dot-nova">N<div class="va-ddot-label">Nova</div></div>
+    </div>
+
+    <!-- Aggregate stats -->
+    <div class="va-summary-row">
+      <div class="va-sum r"><div class="pct">33%</div><div class="sub">Below · 3 deals</div></div>
+      <div class="va-sum gr"><div class="pct">33%</div><div class="sub">In range · 3 deals</div></div>
+      <div class="va-sum b"><div class="pct">33%</div><div class="sub">Above · 3 deals</div></div>
+    </div>
+  </div>
+
+  <!-- DEAL CARDS — minimal -->
+  <div class="va-cards">
+
+    <!-- Helios -->
+    <div class="va-card" id="card-helios" onclick="selectCard('helios')">
+      <div class="va-card-top">
+        <div>
+          <div class="va-card-name">Project Helios</div>
+          <div class="va-card-type">M&A · Sell-side</div>
+        </div>
+        <div class="va-wqi wqi-h">WQI 84</div>
+        <div class="va-card-size">$178M</div>
+      </div>
+      <div class="va-signals">
+        <div class="va-sig">
+          <div class="va-sig-lbl">Fee</div>
+          <div class="va-sig-val" style="color:#16a34a;">1.8% · In range</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Engagement</div>
+          <div class="va-sig-val" style="color:#16a34a;">On Track</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Pulse</div>
+          <div class="va-sig-val" style="color:#16a34a;">83% on-track</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot e"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nova -->
+    <div class="va-card" id="card-nova" onclick="selectCard('nova')">
+      <div class="va-card-top">
+        <div>
+          <div class="va-card-name">Project Nova</div>
+          <div class="va-card-type">ECM</div>
+        </div>
+        <div class="va-wqi wqi-h">WQI 96</div>
+        <div class="va-card-size">$92M</div>
+      </div>
+      <div class="va-signals">
+        <div class="va-sig">
+          <div class="va-sig-lbl">Fee</div>
+          <div class="va-sig-val" style="color:#1d4ed8;">4.2% · Above</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Engagement</div>
+          <div class="va-sig-val" style="color:#16a34a;">On Track</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Pulse</div>
+          <div class="va-sig-val" style="color:#16a34a;">100% on-track</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Titan -->
+    <div class="va-card" id="card-titan" onclick="selectCard('titan')">
+      <div class="va-card-top">
+        <div>
+          <div class="va-card-name">Project Titan</div>
+          <div class="va-card-type">DCM</div>
+        </div>
+        <div class="va-wqi wqi-m">WQI 51</div>
+        <div class="va-card-size">$213M</div>
+      </div>
+      <div class="va-signals">
+        <div class="va-sig">
+          <div class="va-sig-lbl">Fee</div>
+          <div class="va-sig-val" style="color:#dc2626;">0.8% · Below</div>
+          <div class="dots-row"><span class="dot r"></span><span class="dot r"></span><span class="dot e"></span><span class="dot e"></span><span class="dot e"></span><span class="dot e"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Engagement</div>
+          <div class="va-sig-val" style="color:#16a34a;">On Track</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot a"></span><span class="dot g"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Pulse</div>
+          <div class="va-sig-val" style="color:#b45309;">50% on-track</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot r"></span><span class="dot g"></span><span class="dot r"></span><span class="dot g"></span><span class="dot r"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aurora -->
+    <div class="va-card" id="card-aurora" onclick="selectCard('aurora')">
+      <div class="va-card-top">
+        <div>
+          <div class="va-card-name">Project Aurora</div>
+          <div class="va-card-type">M&A · Buy-side</div>
+        </div>
+        <div class="va-wqi wqi-m">WQI 58</div>
+        <div class="va-card-size">$136M</div>
+      </div>
+      <div class="va-signals">
+        <div class="va-sig">
+          <div class="va-sig-lbl">Fee</div>
+          <div class="va-sig-val" style="color:#dc2626;">1.4% · Below</div>
+          <div class="dots-row"><span class="dot r"></span><span class="dot r"></span><span class="dot r"></span><span class="dot e"></span><span class="dot e"></span><span class="dot e"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Engagement</div>
+          <div class="va-sig-val" style="color:#b45309;">Mixed</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot a"></span><span class="dot r"></span><span class="dot g"></span><span class="dot a"></span><span class="dot g"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Pulse</div>
+          <div class="va-sig-val" style="color:#b45309;">67% on-track</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot r"></span><span class="dot g"></span><span class="dot g"></span><span class="dot r"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meridian -->
+    <div class="va-card" id="card-meridian" onclick="selectCard('meridian')">
+      <div class="va-card-top">
+        <div>
+          <div class="va-card-name">Project Meridian</div>
+          <div class="va-card-type">Lev Fin</div>
+        </div>
+        <div class="va-wqi wqi-l">WQI 29</div>
+        <div class="va-card-size">$89M</div>
+      </div>
+      <div class="va-signals">
+        <div class="va-sig">
+          <div class="va-sig-lbl">Fee</div>
+          <div class="va-sig-val" style="color:#dc2626;">0.6% · Below</div>
+          <div class="dots-row"><span class="dot r"></span><span class="dot r"></span><span class="dot r"></span><span class="dot r"></span><span class="dot e"></span><span class="dot e"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Engagement</div>
+          <div class="va-sig-val" style="color:#dc2626;">Overdue</div>
+          <div class="dots-row"><span class="dot a"></span><span class="dot r"></span><span class="dot r"></span><span class="dot g"></span><span class="dot r"></span><span class="dot a"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Pulse</div>
+          <div class="va-sig-val" style="color:#dc2626;">33% on-track</div>
+          <div class="dots-row"><span class="dot r"></span><span class="dot r"></span><span class="dot g"></span><span class="dot r"></span><span class="dot g"></span><span class="dot r"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cassini placeholder -->
+    <div class="va-card" id="card-cassini" onclick="selectCard('cassini')">
+      <div class="va-card-top">
+        <div>
+          <div class="va-card-name">Project Cassini</div>
+          <div class="va-card-type">M&A · Sell-side</div>
+        </div>
+        <div class="va-wqi wqi-h">WQI 78</div>
+        <div class="va-card-size">$154M</div>
+      </div>
+      <div class="va-signals">
+        <div class="va-sig">
+          <div class="va-sig-lbl">Fee</div>
+          <div class="va-sig-val" style="color:#16a34a;">2.0% · In range</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Engagement</div>
+          <div class="va-sig-val" style="color:#16a34a;">On Track</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot a"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span></div>
+        </div>
+        <div class="va-sig">
+          <div class="va-sig-lbl">Pulse</div>
+          <div class="va-sig-val" style="color:#16a34a;">83% on-track</div>
+          <div class="dots-row"><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot g"></span><span class="dot e"></span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="text-align:center; margin-top: 14px; font-size: 12px; color: #9ca3af; cursor: pointer;">+ 3 more deals</div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     VARIATION B — SIGNAL MATRIX
+     Rows = deals. Columns = the 3 signals.
+     Each signal shown as blocks + a label.
+     Win Margin as final column.
+     ══════════════════════════════════════ -->
+<div class="variation" id="vb">
+  <div class="card" style="padding: 18px 20px 0; margin-bottom: 18px;">
+    <div class="dash-topbar">
+      <div>
+        <div class="dash-title">Deal Conversion</div>
+        <div class="dash-date">August, 2025 – Present</div>
+      </div>
+    </div>
+    <div class="dash-tabs">
+      <div class="dtab">Summary</div><div class="dtab">Losses Breakdown</div><div class="dtab active">Wins Breakdown</div>
+    </div>
+  </div>
+
+  <!-- Column headers -->
+  <div class="vb-header-row" style="padding: 0 8px;">
+    <div class="vb-col-head">Deal</div>
+    <div class="vb-col-head">Fee vs. Target</div>
+    <div class="vb-col-head">Engagement Health</div>
+    <div class="vb-col-head">Pipeline Pulse</div>
+    <div class="vb-col-head">Win margin</div>
+  </div>
+
+  <!-- Deal rows -->
+  <!-- Helios -->
+  <div class="vb-row">
+    <div class="vb-cell">
+      <div class="vb-name">Project Helios</div>
+      <div class="vb-meta">M&A · Sell-side · $178M</div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-fee-num" style="color:#16a34a;">1.8%</div>
+      <div class="pill pill-g">In range</div>
+      <div style="height:4px; background:#f3f4f6; border-radius:2px; margin-top:8px; overflow:hidden;"><div style="height:100%; width:55%; background:#22c55e; border-radius:2px;"></div></div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#16a34a;">On Track</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#16a34a;">83%</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#e5e7eb;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-margin" style="color:#16a34a;">Strong</div>
+    </div>
+  </div>
+
+  <!-- Nova -->
+  <div class="vb-row">
+    <div class="vb-cell">
+      <div class="vb-name">Project Nova</div>
+      <div class="vb-meta">ECM · $92M</div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-fee-num" style="color:#1d4ed8;">4.2%</div>
+      <div class="pill pill-b">Above range</div>
+      <div style="height:4px; background:#f3f4f6; border-radius:2px; margin-top:8px; overflow:hidden;"><div style="height:100%; width:88%; background:#3b82f6; border-radius:2px;"></div></div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#16a34a;">On Track</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#16a34a;">100%</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-margin" style="color:#1d4ed8;">Commanding</div>
+    </div>
+  </div>
+
+  <!-- Titan -->
+  <div class="vb-row">
+    <div class="vb-cell">
+      <div class="vb-name">Project Titan</div>
+      <div class="vb-meta">DCM · $213M</div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-fee-num" style="color:#dc2626;">0.8%</div>
+      <div class="pill pill-a">Below range</div>
+      <div style="height:4px; background:#f3f4f6; border-radius:2px; margin-top:8px; overflow:hidden;"><div style="height:100%; width:18%; background:#f59e0b; border-radius:2px;"></div></div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#16a34a;">On Track</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#fbbf24;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#b45309;">50%</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-margin" style="color:#b45309;">Thin</div>
+    </div>
+  </div>
+
+  <!-- Aurora -->
+  <div class="vb-row">
+    <div class="vb-cell">
+      <div class="vb-name">Project Aurora</div>
+      <div class="vb-meta">M&A · Buy-side · $136M</div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-fee-num" style="color:#dc2626;">1.4%</div>
+      <div class="pill pill-a">Below range</div>
+      <div style="height:4px; background:#f3f4f6; border-radius:2px; margin-top:8px; overflow:hidden;"><div style="height:100%; width:26%; background:#f59e0b; border-radius:2px;"></div></div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#b45309;">Mixed</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#fbbf24;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#fbbf24;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#b45309;">67%</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-margin" style="color:#b45309;">Thin</div>
+    </div>
+  </div>
+
+  <!-- Meridian -->
+  <div class="vb-row">
+    <div class="vb-cell">
+      <div class="vb-name">Project Meridian</div>
+      <div class="vb-meta">Lev Fin · $89M</div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-fee-num" style="color:#dc2626;">0.6%</div>
+      <div class="pill pill-r">Below range</div>
+      <div style="height:4px; background:#f3f4f6; border-radius:2px; margin-top:8px; overflow:hidden;"><div style="height:100%; width:10%; background:#f87171; border-radius:2px;"></div></div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#dc2626;">Overdue</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#fbbf24;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#fbbf24;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-signal-main" style="color:#dc2626;">33%</div>
+      <div class="vb-blocks">
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+        <div class="vb-block" style="background:#22c55e;"></div>
+        <div class="vb-block" style="background:#f87171;"></div>
+      </div>
+    </div>
+    <div class="vb-cell">
+      <div class="vb-margin" style="color:#dc2626;">Lucky win</div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:10px; font-size:12px; color:#9ca3af; cursor:pointer; padding:10px;">+ 4 more deals</div>
+
+  <!-- Bottom insight strip -->
+  <div class="vb-insight" style="margin-top:4px;">
+    <div class="vb-ins-col">
+      <div class="vb-ins-title">Fee vs. Target</div>
+      <div class="vb-ins-stat" style="color:#dc2626;">33%</div>
+      <div class="vb-ins-sub">of wins were below range</div>
+    </div>
+    <div class="vb-ins-col">
+      <div class="vb-ins-title">Engagement Health</div>
+      <div class="vb-ins-stat" style="color:#16a34a;">68%</div>
+      <div class="vb-ins-sub">of deal periods on track</div>
+    </div>
+    <div class="vb-ins-col">
+      <div class="vb-ins-title">Pipeline Pulse</div>
+      <div class="vb-ins-stat" style="color:#b45309;">67%</div>
+      <div class="vb-ins-sub">avg on-track rate across wins</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     VARIATION C — SCATTER + STRIP
+     Scatter map on top; fee spectrum strip
+     directly below it as a second view of
+     the same 9 deals. Hover tooltip only.
+     ══════════════════════════════════════ -->
+<div class="variation" id="vc">
+  <div class="card" style="padding: 18px 20px 0; margin-bottom: 18px;">
+    <div class="dash-topbar">
+      <div>
+        <div class="dash-title">Deal Conversion</div>
+        <div class="dash-date">August, 2025 – Present</div>
+      </div>
+    </div>
+    <div class="dash-tabs">
+      <div class="dtab">Summary</div><div class="dtab">Losses Breakdown</div><div class="dtab active">Wins Breakdown</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 20px;">
+    <div style="font-size:14px; font-weight:700; color:#111827; margin-bottom:3px;">Win Quality Map</div>
+    <div style="font-size:12px; color:#9ca3af; margin-bottom:16px;">
+      X — fee vs. target range &nbsp;·&nbsp; Y — engagement health &nbsp;·&nbsp; Size — deal value &nbsp;·&nbsp; Hover to inspect
+    </div>
+
+    <!-- SCATTER -->
+    <div class="vc-scatter" id="vc-scatter">
+      <div class="vc-below-bg"></div>
+      <div class="vc-in-bg"></div>
+      <div class="vc-above-bg"></div>
+      <div class="vc-midline"></div>
+      <div class="vc-vline1"></div>
+      <div class="vc-vline2"></div>
+
+      <div class="vc-zlabel" style="left:3%; color:#fca5a5;">Below</div>
+      <div class="vc-zlabel" style="left:41%; color:#86efac;">In range</div>
+      <div class="vc-zlabel" style="right:4%; color:#93c5fd;">Above</div>
+      <div style="position:absolute; top:52%; right:8px; font-size:9px; color:#c4c9d4; font-weight:600;">— Engagement threshold —</div>
+
+      <div class="vc-axis-x">← Below &nbsp;&nbsp; Fee vs. Target &nbsp;&nbsp; Above →</div>
+      <div class="vc-axis-y">Engagement Health ↑</div>
+
+      <!-- Bubbles: left% = x position, top% = y position (lower = worse engagement) -->
+      <!-- Helios: In range + great eng + $178M -->
+      <div class="vc-bubble" style="background:#6366f1; width:50px; height:50px; left:42%; top:22%;"
+           onmouseenter="showTip(event,'Project Helios','M&A','$178M','1.8% · In range','On Track','83% on-track','WQI 84')"
+           onmouseleave="hideTip()">H</div>
+      <!-- Nova: above + great + $92M -->
+      <div class="vc-bubble" style="background:#0891b2; width:42px; height:42px; left:78%; top:14%;"
+           onmouseenter="showTip(event,'Project Nova','ECM','$92M','4.2% · Above range','On Track','100% on-track','WQI 96')"
+           onmouseleave="hideTip()">N</div>
+      <!-- Cassini: in range + good + $154M -->
+      <div class="vc-bubble" style="background:#6366f1; width:46px; height:46px; left:52%; top:32%;"
+           onmouseenter="showTip(event,'Project Cassini','M&A','$154M','2.0% · In range','On Track','83% on-track','WQI 78')"
+           onmouseleave="hideTip()">C</div>
+      <!-- Atlas: above + good + $118M -->
+      <div class="vc-bubble" style="background:#0891b2; width:38px; height:38px; left:69%; top:26%;"
+           onmouseenter="showTip(event,'Project Atlas','ECM','$118M','3.4% · Above range','On Track','83% on-track','WQI 82')"
+           onmouseleave="hideTip()">At</div>
+      <!-- Titan: below + ok eng + $213M — BIG -->
+      <div class="vc-bubble" style="background:#f59e0b; width:56px; height:56px; left:17%; top:30%; font-size:11px;"
+           onmouseenter="showTip(event,'Project Titan','DCM','$213M','0.8% · Below range','On Track','50% on-track','WQI 51')"
+           onmouseleave="hideTip()">T</div>
+      <!-- Vega: in range + mixed eng -->
+      <div class="vc-bubble" style="background:#6366f1; width:34px; height:34px; left:38%; top:58%;"
+           onmouseenter="showTip(event,'Project Vega','M&A','$97M','2.1% · In range','Mixed','67% on-track','WQI 62')"
+           onmouseleave="hideTip()">V</div>
+      <!-- Orion: above + mixed eng -->
+      <div class="vc-bubble" style="background:#1d4ed8; width:40px; height:40px; left:72%; top:55%;"
+           onmouseenter="showTip(event,'Project Orion','DCM','$142M','2.9% · Above range','Mixed','67% on-track','WQI 70')"
+           onmouseleave="hideTip()">O</div>
+      <!-- Aurora: below + mixed -->
+      <div class="vc-bubble" style="background:#f59e0b; width:44px; height:44px; left:22%; top:56%;"
+           onmouseenter="showTip(event,'Project Aurora','M&A','$136M','1.4% · Below range','Mixed','67% on-track','WQI 58')"
+           onmouseleave="hideTip()">A</div>
+      <!-- Meridian: below + bad eng + $89M -->
+      <div class="vc-bubble" style="background:#ef4444; width:32px; height:32px; left:9%; top:74%;"
+           onmouseenter="showTip(event,'Project Meridian','Lev Fin','$89M','0.6% · Below range','Overdue','33% on-track','WQI 29')"
+           onmouseleave="hideTip()">M</div>
+
+      <!-- Tooltip -->
+      <div class="vc-tooltip" id="vc-tip">
+        <div class="vc-tooltip-name" id="tip-name"></div>
+        <div class="vc-tooltip-row"><span>Type</span><span id="tip-type"></span></div>
+        <div class="vc-tooltip-row"><span>Size</span><span id="tip-size"></span></div>
+        <div class="vc-tooltip-row"><span>Fee</span><span id="tip-fee"></span></div>
+        <div class="vc-tooltip-row"><span>Engagement</span><span id="tip-eng"></span></div>
+        <div class="vc-tooltip-row"><span>Pulse</span><span id="tip-pulse"></span></div>
+        <div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,.15);">
+          <span id="tip-wqi" style="font-size:13px; font-weight:800;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TYPE LEGEND -->
+    <div style="display:flex; gap:16px; margin-top:12px; flex-wrap:wrap; padding-left:2px;">
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#374151;"><div style="width:10px;height:10px;border-radius:50%;background:#6366f1;"></div>M&A</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#374151;"><div style="width:10px;height:10px;border-radius:50%;background:#0891b2;"></div>ECM</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#374151;"><div style="width:10px;height:10px;border-radius:50%;background:#1d4ed8;"></div>DCM</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#374151;"><div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;"></div>Lev Fin</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#374151;"><div style="width:10px;height:10px;border-radius:50%;background:#ef4444;"></div>Mixed</div>
+      <div style="margin-left:auto;font-size:11px;color:#9ca3af;">Bubble size = deal value</div>
+    </div>
+
+    <!-- SPECTRUM STRIP — same 9 deals, different lens -->
+    <div style="border-top: 1px solid #f3f4f6; margin-top: 20px; padding-top: 18px;">
+      <div style="font-size:12px; font-weight:700; color:#111827; margin-bottom:10px;">Same 9 deals — fee vs. target range</div>
+      <div class="vc-strip-track">
+        <div class="vc-strip-below"></div>
+        <div class="vc-strip-in"></div>
+        <div class="vc-strip-above"></div>
+        <div class="vc-strip-dots">
+          <div class="vc-sdot" style="background:#ef4444; left:7%;"><span>M</span><div class="vc-sdot-lbl">0.6%</div></div>
+          <div class="vc-sdot" style="background:#f59e0b; left:16%;"><span>T</span><div class="vc-sdot-lbl">0.8%</div></div>
+          <div class="vc-sdot" style="background:#f59e0b; left:23%;"><span>A</span><div class="vc-sdot-lbl">1.4%</div></div>
+          <div class="vc-sdot" style="background:#6366f1; left:37%;"><span>H</span><div class="vc-sdot-lbl">1.8%</div></div>
+          <div class="vc-sdot" style="background:#6366f1; left:47%;"><span>C</span><div class="vc-sdot-lbl">2.0%</div></div>
+          <div class="vc-sdot" style="background:#6366f1; left:55%;"><span>V</span><div class="vc-sdot-lbl">2.1%</div></div>
+          <div class="vc-sdot" style="background:#1d4ed8; left:68%;"><span>O</span><div class="vc-sdot-lbl">2.9%</div></div>
+          <div class="vc-sdot" style="background:#0891b2; left:78%;"><span>At</span><div class="vc-sdot-lbl">3.4%</div></div>
+          <div class="vc-sdot" style="background:#0891b2; left:88%;"><span>N</span><div class="vc-sdot-lbl">4.2%</div></div>
+        </div>
+      </div>
+      <div class="vc-strip-legend" style="margin-top: 36px;">
+        <span>Below target range</span>
+        <span>Within target range</span>
+        <span>Above target range</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 summary bars -->
+  <div class="vc-bars">
+    <div class="vc-bar-card">
+      <div class="vc-bar-label">Fee vs. Target</div>
+      <div class="vc-bar-stat" style="color:#dc2626;">33%</div>
+      <div class="vc-bar-sub">below range · avg 1.9%</div>
+      <div class="vc-track"><div class="vc-fill" style="width:40%; background: linear-gradient(90deg, #f59e0b 0%, #22c55e 100%);"></div></div>
+    </div>
+    <div class="vc-bar-card">
+      <div class="vc-bar-label">Engagement Health</div>
+      <div class="vc-bar-stat" style="color:#16a34a;">68%</div>
+      <div class="vc-bar-sub">of periods on track</div>
+      <div class="vc-track"><div class="vc-fill" style="width:68%; background:#22c55e;"></div></div>
+    </div>
+    <div class="vc-bar-card">
+      <div class="vc-bar-label">Pipeline Pulse</div>
+      <div class="vc-bar-stat" style="color:#b45309;">67%</div>
+      <div class="vc-bar-sub">avg on-track rate</div>
+      <div class="vc-track"><div class="vc-fill" style="width:67%; background:#f59e0b;"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showV(id) {
+  document.querySelectorAll('.variation').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
+  document.getElementById('v' + id).classList.add('active');
+  document.querySelectorAll('.vtab')[['a','b','c'].indexOf(id)].classList.add('active');
+}
+
+// Variation A: spectrum dot ↔ card selection
+function selectCard(id) {
+  document.querySelectorAll('.va-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.va-ddot').forEach(d => d.classList.remove('selected'));
+  const card = document.getElementById('card-' + id);
+  const dot = document.getElementById('dot-' + id);
+  if (card) { card.classList.add('selected'); card.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+  if (dot) dot.classList.add('selected');
+}
+
+// Variation C: tooltip
+function showTip(e, name, type, size, fee, eng, pulse, wqi) {
+  const tip = document.getElementById('vc-tip');
+  const scatter = document.getElementById('vc-scatter');
+  const rect = scatter.getBoundingClientRect();
+  const bRect = e.currentTarget.getBoundingClientRect();
+  let x = bRect.left - rect.left + bRect.width / 2 + 12;
+  let y = bRect.top - rect.top - 10;
+  if (x + 190 > rect.width) x = bRect.left - rect.left - 196;
+  tip.style.left = x + 'px';
+  tip.style.top = y + 'px';
+  document.getElementById('tip-name').textContent = name;
+  document.getElementById('tip-type').textContent = type;
+  document.getElementById('tip-size').textContent = size;
+  document.getElementById('tip-fee').textContent = fee;
+  document.getElementById('tip-eng').textContent = eng;
+  document.getElementById('tip-pulse').textContent = pulse;
+  const wqiEl = document.getElementById('tip-wqi');
+  wqiEl.textContent = wqi;
+  const score = parseInt(wqi.replace('WQI ',''));
+  wqiEl.style.color = score >= 75 ? '#86efac' : score >= 50 ? '#fcd34d' : '#f87171';
+  tip.classList.add('visible');
+}
+function hideTip() {
+  document.getElementById('vc-tip').classList.remove('visible');
+}
+</script>
+</body>
+</html>
